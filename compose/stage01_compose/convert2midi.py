@@ -134,6 +134,7 @@ def skyline_event_to_midi(events, output_midi_path=None, is_full_event=False,
     )
 
   pre_save_start_tick = []
+  valid_chords = [] # chords that don't contain N_N
   for c in temp_chords:
     midi_obj.markers.append(
       miditoolkit.Marker('Chord-{}'.format(c.chord_val), int(c.start_tick))
@@ -141,17 +142,18 @@ def skyline_event_to_midi(events, output_midi_path=None, is_full_event=False,
     if c.chord_val == "N_N":
       continue
     pre_save_start_tick.append(c.start_tick)
-  
-  # assert len(pre_save_start_tick) == len(temp_chords)
+    valid_chords.append(c)
+
+  assert len(pre_save_start_tick) == len(valid_chords)
   if add_basic_chord:
-    for i, c in enumerate(temp_chords):
+    for i, c in enumerate(valid_chords):
       if c.chord_val == "N_N":
         continue
       chord_notes = CHORD_NOTES_MAP[c.chord_val]
       # print(c.chord_val, CHORD_NOTES_MAP[c.chord_val])
-      # print(len(temp_chords))
+      # print(len(valid_chords))
       for note in chord_notes:
-        if i==(len(temp_chords)-1):
+        if i==(len(valid_chords)-1):
           chord_note = miditoolkit.Note(
               velocity=60,         # Note velocity
               pitch=note,  # Note pitch

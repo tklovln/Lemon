@@ -17,9 +17,8 @@ import time
 
 config_path = sys.argv[1]
 out_dir = sys.argv[2]
-max_bars = int(sys.argv[3])
-
 n_pieces = int(sys.argv[3]) if len(sys.argv) > 3 else 20
+max_bars = int(sys.argv[4])
 
 config = yaml.load(open(config_path, 'r'), Loader=yaml.FullLoader)
 ckpt_dir = config['output']['ckpt_dir']
