@@ -21,10 +21,26 @@
         .catch((error) => console.error("Error fetching logger:", error));
     }
 
+    function deleteLeadsheet(directory) {
+      fetch("/delete_directory/" + directory, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          // Handle error response here, if needed
+        });
+    }
+
     // Call generation backend
     function generateLeadsheet() {
-      // need to clear previous one
-      // TODO:
+      // need to clear previous generation, need music id?
+      // TODO: maybe the midi_id should in backend?
+      deleteLeadsheet("compose/generation/000");
 
       // busy wait, bad
       var intervalId = setInterval(fetchProgress, 1000);

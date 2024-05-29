@@ -1,6 +1,8 @@
 from flask import Flask, render_template, send_from_directory, jsonify
 import subprocess
 import json, os
+import shutil
+
 app = Flask(__name__)
 midi_id = "000"
 
@@ -30,6 +32,16 @@ def serve_gen_midi(filename):
 @app.route('/static/<path:filename>')
 def serve_static(filename):
     return send_from_directory('static', filename)
+
+@app.route('/delete_directory/<path:directory>', methods=['DELETE'])
+def delete_directory(directory):
+    print(f"delete: {directory}")
+    try:
+        shutil.rmtree(directory)
+        return f'Directory {directory} deleted successfully', 200
+    except Exception as e:
+        return f'Error deleting directory {directory}: {str(e)}', 500
+    
 
 @app.route('/generate_leadsheet')
 def generate_leadsheet():
