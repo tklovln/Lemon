@@ -1,0 +1,35 @@
+[33mcommit f3fc9482eefea9c0ea996ea388c959df44dbdf0b[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: blazerdrivers <xdblazer39@gmail.com>
+Date:   Wed May 29 18:24:37 2024 +0000
+
+    📌 add progess number
+
+[33mcommit e5e3581a308b962a1e791fe714a38a7d5cf692e3[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: blazerdrivers <xdblazer39@gmail.com>
+Date:   Wed May 29 11:01:34 2024 +0000
+
+    ♫ add generated part and make it reloadable
+
+[33mcommit 84ebb765bcf3289670ba49c92e1f75fcb921ad8b[m
+Author: blazerdrivers <xdblazer39@gmail.com>
+Date:   Wed May 29 09:45:06 2024 +0000
+
+    ♫ add composing model
+
+[33mcommit d640d254a3904e5c095d9e8b9134a15780049ac7[m
+Author: blazerdrivers <xdblazer39@gmail.com>
+Date:   Wed May 29 09:44:24 2024 +0000
+
+    ♮ fix .gitignore
+
+[33mcommit 2f65d00f02a81155a3c4c75a3668c45a945fbd3d[m
+Author: blazerdrivers <xdblazer39@gmail.com>
+Date:   Wed May 29 09:39:47 2024 +0000
+
+    ♮ fix gitignore
+
+[33mcommit a2779b8a4ceec1b14e66efd3425df2b0c8cd725d[m
+Author: blazerdrivers <xdblazer39@gmail.com>
+Date:   Wed May 29 09:10:59 2024 +0000
+
+    initial commit

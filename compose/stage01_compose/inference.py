@@ -172,7 +172,7 @@ if __name__ == '__main__':
                             event2idx, idx2event,
                             max_events=max_dec_len, max_bars=max_bars,
                             primer=['Tempo_{}'.format(orig_tempos[0].tempo), 'Bar_None'],
-                            temp=temp, top_p=top_p
+                            temp=temp, top_p=top_p, out_dir=out_dir,
                           )
     else:
       gen_words, t_sec = generate_plain_xl(

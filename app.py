@@ -2,7 +2,7 @@ from flask import Flask, render_template, send_from_directory, jsonify
 import subprocess
 import json, os
 app = Flask(__name__)
-
+midi_id = "000"
 
 def read_json(filename):
     with open(filename, 'r') as file:
@@ -25,7 +25,7 @@ def serve_midi(filename):
 
 @app.route('/gen_midis/<path:filename>')
 def serve_gen_midi(filename):
-    return send_from_directory('compose/generation/stage01', filename)
+    return send_from_directory(f'compose/generation/{midi_id}', filename)
 
 @app.route('/static/<path:filename>')
 def serve_static(filename):
@@ -33,17 +33,16 @@ def serve_static(filename):
 
 @app.route('/generate_leadsheet')
 def generate_leadsheet():
-    inference_cmd = "python3 stage01_compose/inference.py stage01_compose/config/pop1k7_finetune.yaml generation/stage01 1 16"
+    inference_cmd = f"python3 stage01_compose/inference.py stage01_compose/config/pop1k7_finetune.yaml generation/{midi_id} 1 16"
     processed_cmd = inference_cmd.split(" ")
     print(processed_cmd)
     subprocess.run(processed_cmd, check=True, cwd="compose")
-
-    output_path = "compose/generation/stage01/samp_01.mid"
+    output_path = f"compose/generation/{midi_id}/samp_01.mid"
     return output_path
 
 @app.route('/logger')
 def logger():
-    file_path = "compose/generation/stage01/log.json"
+    file_path = f"compose/generation/{midi_id}/log.json"
     if not os.path.exists(file_path):
         return jsonify({'progress':0})
     data = read_json(file_path)

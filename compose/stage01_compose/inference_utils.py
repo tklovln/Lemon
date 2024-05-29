@@ -49,7 +49,7 @@ def get_position_idx(event):
 ########################################
 def generate_plain_xl(model, event2idx, idx2event, max_bars=160,
                       max_events=2048, primer=None, temp=1.2, top_p=0.9,
-                      prompt_bars=None,):
+                      prompt_bars=None,out_dir=None):
   if primer is None:
     generated = [event2idx['Bar_None']]
     target_bars, generated_bars = max_bars, 0
@@ -97,7 +97,7 @@ def generate_plain_xl(model, event2idx, idx2event, max_bars=160,
 
     if 'Bar' in word_event:
       print(f"{generated_bars+1}/{target_bars}")
-      file_path = '/home/tkwang/Lemon/compose/generation/stage01/log.json'
+      file_path = f'{out_dir}/log.json'
       if not os.path.exists(file_path):
         # Create the parent directories if they don't exist
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
