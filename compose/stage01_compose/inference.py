@@ -23,11 +23,10 @@ max_bars = int(sys.argv[4])
 config = yaml.load(open(config_path, 'r'), Loader=yaml.FullLoader)
 ckpt_dir = config['output']['ckpt_dir']
 
-
 temp = 1.2
 top_p = 0.97
 max_dec_len = 2400
-print ('[nucleus parameters] t = {}, p = {}'.format(temp, top_p))
+# print ('[nucleus parameters] t = {}, p = {}'.format(temp, top_p))
 
 # torch.cuda.device(config['device'])
 # torch.cuda.device("cpu")
@@ -39,7 +38,7 @@ prompt_bars = 8
 
 def read_vocab(vocab_file):
   event2idx, idx2event = pickle_load(vocab_file)
-  print(event2idx)
+  # print(event2idx)
   orig_vocab_size = len(event2idx)
   pad_token = orig_vocab_size
   event2idx['PAD_None'] = pad_token
@@ -52,7 +51,6 @@ def dump_midi(words, idx2event, output_midi_path=None,
               rfreq_cls=None, polyph_cls=None, output_event_path=None,
               return_tempo=False, enforce_tempo_val=None):
   events = [idx2event[w] for w in words]
-  print("dump!")
   if output_event_path is not None:
     f = open(output_event_path, 'w')
     if rfreq_cls is not None:
@@ -69,7 +67,6 @@ def dump_midi(words, idx2event, output_midi_path=None,
   if return_tempo:
     return skyline_event_to_midi(events, output_midi_path=output_midi_path, return_tempo=True)[1]
   elif enforce_tempo_val is not None:
-    print("enforce  tempo")
     skyline_event_to_midi(events, output_midi_path=output_midi_path, enforce_tempo=True, enforce_tempo_val=enforce_tempo_val, add_basic_chord=True)
   else:
     skyline_event_to_midi(events, output_midi_path=output_midi_path)
@@ -131,7 +128,7 @@ if __name__ == '__main__':
             dec_dropout=mconf['decoder']['dropout'],
             pre_lnorm=mconf['pre_lnorm']
           )
-  print ('[info] # params:', sum(p.numel() for p in model.parameters() if p.requires_grad))
+  # print ('[info] # params:', sum(p.numel() for p in model.parameters() if p.requires_grad))
 
   pretrained_dict = torch.load(config['inference_param_path'], map_location='cpu')
   model.load_state_dict( pretrained_dict )
@@ -157,16 +154,16 @@ if __name__ == '__main__':
       orig_tempos = [
         TempoEvent(tempo, 0, 0)
       ]
-      print ('[global tempo]', orig_tempos[0].tempo)
+      # print ('[global tempo]', orig_tempos[0].tempo)
     else:
       target_bars = prompts[p][1]
       orig_tempos = [
         TempoEvent(int(prompts[p][0][0].split('_')[-1]), 0, 0)
       ]
 
-    print (' -- generating leadsheet #{} of {}'.format(
-      generated_pieces + 1, total_pieces
-    ))
+    # print (' -- generating leadsheet #{} of {}'.format(
+    #   generated_pieces + 1, total_pieces
+    # ))
 
 
     if not use_prompt:
@@ -188,15 +185,15 @@ if __name__ == '__main__':
                           )
 
     if gen_words is None: # model failed repeatedly
-      print("REDO | gen_words is None")
+      # print("REDO | gen_words is None")
       continue
       
     if len(gen_words) >= max_dec_len:
-      print("REDO | len(gen_words) >= max_dec_len")
+      # print("REDO | len(gen_words) >= max_dec_len")
       continue
 
     if len( np.where( np.array(gen_words) == event2idx[ 'Bar_None' ] )[0] ) > max_bars:
-      print(f"REDO | {len( np.where( np.array(gen_words) == event2idx[ 'Bar_None' ] )[0] ) }>= max_bar")
+      # print(f"REDO | {len( np.where( np.array(gen_words) == event2idx[ 'Bar_None' ] )[0] ) }>= max_bar")
       continue
 
     
@@ -210,9 +207,9 @@ if __name__ == '__main__':
     gen_times.append(t_sec)
     generated_pieces += 1
 
-  print ('[info] finished generating {} pieces, avg. time: {:.2f} +/- {:.2f} secs.'.format(
-    generated_pieces, np.mean(gen_times), np.std(gen_times)
-  ))
+  # print ('[info] finished generating {} pieces, avg. time: {:.2f} +/- {:.2f} secs.'.format(
+  #   generated_pieces, np.mean(gen_times), np.std(gen_times)
+  # ))
 
 
 '''

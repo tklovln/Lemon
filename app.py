@@ -1,7 +1,17 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, jsonify
 import subprocess
-
+import json, os
 app = Flask(__name__)
+
+
+def read_json(filename):
+    with open(filename, 'r') as file:
+        data = json.load(file)
+    return data
+
+def write_json(filename, data):
+    with open(filename, 'w') as file:
+        json.dump(data, file)
 
 @app.route('/')
 def home():
@@ -23,20 +33,22 @@ def serve_static(filename):
 
 @app.route('/generate_leadsheet')
 def generate_leadsheet():
-    inference_cmd = "python3 stage01_compose/inference.py stage01_compose/config/pop1k7_finetune.yaml generation/stage01 1 4"
+    inference_cmd = "python3 stage01_compose/inference.py stage01_compose/config/pop1k7_finetune.yaml generation/stage01 1 16"
     processed_cmd = inference_cmd.split(" ")
     print(processed_cmd)
     subprocess.run(processed_cmd, check=True, cwd="compose")
+
     output_path = "compose/generation/stage01/samp_01.mid"
-    # Assuming the audio file is generated in the current directory with name 'output_audio.wav'
-    # return '<a href="/play_audio">Click here to play the generated audio</a>'
     return output_path
 
-@app.route('/')
-def refresh_endpoint():
-    # Generate or retrieve the refreshed content here
-    refreshed_content = "<p>New content goes here</p>"
-    return refreshed_content
+@app.route('/logger')
+def logger():
+    file_path = "compose/generation/stage01/log.json"
+    if not os.path.exists(file_path):
+        return jsonify({'progress':0})
+    data = read_json(file_path)
+    return data  # Example progress value
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
+    

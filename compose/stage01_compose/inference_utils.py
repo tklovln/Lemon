@@ -3,7 +3,7 @@ import time
 import scipy
 import torch
 import numpy as np
-
+import json, os
 from utils import tensor_to_numpy
 
 
@@ -49,7 +49,7 @@ def get_position_idx(event):
 ########################################
 def generate_plain_xl(model, event2idx, idx2event, max_bars=160,
                       max_events=2048, primer=None, temp=1.2, top_p=0.9,
-                      prompt_bars=None):
+                      prompt_bars=None,):
   if primer is None:
     generated = [event2idx['Bar_None']]
     target_bars, generated_bars = max_bars, 0
@@ -65,6 +65,7 @@ def generate_plain_xl(model, event2idx, idx2event, max_bars=160,
   failed_cnt = 0
   mems = tuple()
   while generated_bars < target_bars:
+    
     if steps == 0:
       dec_input = torch.LongTensor([generated]).to(device)
       dec_input = dec_input.permute(1, 0) if len(generated) > 1 else dec_input
@@ -95,14 +96,30 @@ def generate_plain_xl(model, event2idx, idx2event, max_bars=160,
         failed_cnt = 0
 
     if 'Bar' in word_event:
+      print(f"{generated_bars+1}/{target_bars}")
+      file_path = '/home/tkwang/Lemon/compose/generation/stage01/log.json'
+      if not os.path.exists(file_path):
+        # Create the parent directories if they don't exist
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        # Create the file
+        with open(file_path, 'w') as file:
+            # Optionally, you can write initial content to the file
+            file.write('{}')  # Writing an empty JSON object
+
+      with open(file_path, 'w') as file:
+        json.dump({'progress':round(((generated_bars+1)/target_bars)*100)}, file)
+
       bar_end = time.time()
       bar_time_span = bar_end - bar_start
-      print(f"time cost {bar_time_span}")
+      # print(f"time cost {bar_time_span}")
       bar_start = bar_end
       
       generated_bars += 1
       cur_pos = 0
-      print ('[info] generated {} bars, #events = {}'.format(generated_bars, len(generated)))
+
+      
+
+      # print ('[info] generated {} bars, #events = {}'.format(generated_bars, len(generated)))
     if word_event == 'PAD_None':
       continue
 
@@ -111,14 +128,14 @@ def generate_plain_xl(model, event2idx, idx2event, max_bars=160,
     steps += 1
 
     if len(generated) > max_events:
-      print ('[info] max events reached')
+      # print ('[info] max events reached')
       break
     if word_event == 'EOS_None':
-      print ('[info] gotten eos')
+      # print ('[info] gotten eos')
       break      
 
-  print ('-- generated events:', len(generated))
-  print ('-- time elapsed: {:.2f} secs'.format(time.time() - time_st))
-  print ('-- time elapsed each bar: {:.2f} secs'.format((time.time() - time_st)/generated_bars))
+  # print ('-- generated events:', len(generated))
+  # print ('-- time elapsed: {:.2f} secs'.format(time.time() - time_st))
+  # print ('-- time elapsed each bar: {:.2f} secs'.format((time.time() - time_st)/generated_bars))
 
   return generated[:-1], time.time() - time_st
